@@ -37,6 +37,9 @@ namespace UltimateTeam.Toolkit.Parameters
             if (MaxBid > 0)
                 uriString += "&macr=" + MaxBid;
 
+            if (ResourceId > 0)
+                uriString += "&definitionId=" + CalculateBaseId(ResourceId);
+
             SetPosition(ref uriString);
 
             uriString += "&type=" + Type.ToLower();
@@ -70,6 +73,31 @@ namespace UltimateTeam.Toolkit.Parameters
                         ? "&zone="
                         : "&pos=")
                              + Position;
+        }
+
+        private long CalculateBaseId(long resourceId)
+        {
+            var baseId = resourceId;
+            var version = 0;
+
+            while (baseId > 16777216)
+            {
+                version++;
+                switch (version)
+                {
+                    case 1:
+                        baseId -= 1342177280;
+                        break;
+                    case 2:
+                        baseId -= 50331648;
+                        break;
+                    default:
+                        baseId -= 16777216;
+                        break;
+                }
+            }
+
+            return baseId;
         }
     }
 }
